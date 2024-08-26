@@ -1,12 +1,19 @@
 package com.IBMInternship.ticket_service.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tickets")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +29,17 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private TicketPriority priority;
 
-    @Column(nullable = false, name = "status")
+ @Column(
+//         nullable = false,
+            name = "status")
     @Enumerated(EnumType.STRING)
     private TicketStatus status;
 
     @Column(nullable = false, name = "createdBy")
     private Long createdBy;
+
+    @Column
+    private Long updatedBy;
 
     @Column(nullable = false, name = "createdAt")
     private LocalDateTime createdAt;
@@ -47,6 +59,15 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name ="category_id")
     private TicketCategory ticketCategory;
+
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attachment> attachments;
+
+
+
 
 
 

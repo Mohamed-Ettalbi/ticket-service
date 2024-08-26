@@ -26,8 +26,6 @@ public class Comment {
 
         private LocalDateTime createdAt;
 
-        private LocalDateTime deletedAt;
-
         @ManyToOne
         @JoinColumn(name = "ticket_id")
         private Ticket ticket;
@@ -36,5 +34,4 @@ public class Comment {
 
 
     }
-
 
