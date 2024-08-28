@@ -1,8 +1,8 @@
 package com.IBMInternship.ticket_service.service;
 
+import com.IBMInternship.ticket_service.model.dtos.CommentDTO;
 import com.IBMInternship.ticket_service.repositories.CommentRepository;
 import com.IBMInternship.ticket_service.repositories.TicketRepository;
-import com.IBMInternship.ticket_service.model.dtos.CommentDTO;
 import com.IBMInternship.ticket_service.mappers.CommentMapper;
 import com.IBMInternship.ticket_service.model.entities.CommentEntity;
 import com.IBMInternship.ticket_service.model.entities.TicketEntity;

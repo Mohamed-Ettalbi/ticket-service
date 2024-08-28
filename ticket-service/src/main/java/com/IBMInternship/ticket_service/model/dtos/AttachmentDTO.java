@@ -4,17 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentDTO {
-
-
-    private Long id;
-    private String message;
-
-    private Long ticketId;
-    private LocalDateTime createdAt;
+public class AttachmentDTO {
+    private String fileName;
+    private String fileDownloadUri;
+    private String fileType;
+    private long size;
 }

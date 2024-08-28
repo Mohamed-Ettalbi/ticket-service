@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-
+@AllArgsConstructor
+@NoArgsConstructor
 public class AttachmentEntity {
 
     @Id
@@ -21,6 +22,7 @@ public class AttachmentEntity {
     private String fileName;
 
     @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] data;
 
     private LocalDateTime createdAt;
@@ -31,15 +33,5 @@ public class AttachmentEntity {
     private TicketEntity ticket;
 
 
-    public AttachmentEntity(String fileName, String fileType, byte[] data ,
-                            LocalDateTime createdAt
-                            , TicketEntity ticket) {
-        this.fileName = fileName;
-        this.fileType = fileType;
-        this.data = data;
-        this.createdAt = createdAt;
-        this.ticket = ticket;
-    }
-    public AttachmentEntity() {}
 
 }
