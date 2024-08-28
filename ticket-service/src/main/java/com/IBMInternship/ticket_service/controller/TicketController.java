@@ -1,9 +1,8 @@
 package com.IBMInternship.ticket_service.controller;
 
-import com.IBMInternship.ticket_service.dao.dto.CreateTicketDTO;
-import com.IBMInternship.ticket_service.dao.dto.TicketDTO;
-import com.IBMInternship.ticket_service.dao.dto.UpdateTicketDTO;
-import com.IBMInternship.ticket_service.model.Ticket;
+import com.IBMInternship.ticket_service.model.dtos.CreateTicketDTO;
+import com.IBMInternship.ticket_service.model.dtos.TicketDTO;
+import com.IBMInternship.ticket_service.model.dtos.UpdateTicketDTO;
 import com.IBMInternship.ticket_service.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

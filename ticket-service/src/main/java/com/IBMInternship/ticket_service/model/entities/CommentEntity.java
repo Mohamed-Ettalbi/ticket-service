@@ -1,4 +1,4 @@
-package com.IBMInternship.ticket_service.model;
+package com.IBMInternship.ticket_service.model.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comment {
+public class CommentEntity {
 
 
 
@@ -28,7 +28,7 @@ public class Comment {
 
         @ManyToOne
         @JoinColumn(name = "ticket_id")
-        private Ticket ticket;
+        private TicketEntity ticket;
 
         private Long userId;
 

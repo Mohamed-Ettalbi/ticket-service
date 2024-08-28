@@ -1,11 +1,10 @@
 package com.IBMInternship.ticket_service.controller;
-
-import com.IBMInternship.ticket_service.dao.dto.CommentDTO;
-import com.IBMInternship.ticket_service.model.Comment;
+import com.IBMInternship.ticket_service.model.dtos.CommentDTO;
 import com.IBMInternship.ticket_service.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -14,12 +13,10 @@ import java.util.List;
 @RequestMapping("/api/comments")
 public class CommentController {
 
-    private final CommentService commentService;
-
     @Autowired
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
+    private  CommentService commentService;
+
+
 
     @PostMapping("/{ticketId}")
     public ResponseEntity<CommentDTO> addComment(@PathVariable Long ticketId, @RequestBody String message) {
@@ -31,6 +28,18 @@ public class CommentController {
     public ResponseEntity<List<CommentDTO>> getCommentsByTicket(@PathVariable Long ticketId) {
         List<CommentDTO> comments = commentService.getCommentsByTicketId(ticketId);
         return ResponseEntity.ok(comments);
+    }
+
+    @DeleteMapping("/delete/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
+
+        commentService.deleteCommentById(commentId);
+        return ResponseEntity.ok("Comment deleted successfully");
+    }
+    @PutMapping("/update/{commentId}")
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable Long commentId, @RequestBody String message) {
+       CommentDTO updatedComment= commentService.updateComment(commentId,message);
+        return ResponseEntity.ok(updatedComment);
     }
 }
 

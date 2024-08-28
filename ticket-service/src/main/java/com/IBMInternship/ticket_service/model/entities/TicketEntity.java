@@ -1,8 +1,9 @@
-package com.IBMInternship.ticket_service.model;
+package com.IBMInternship.ticket_service.model.entities;
 
+import com.IBMInternship.ticket_service.model.enumerations.TicketPriorityEnum;
+import com.IBMInternship.ticket_service.model.enumerations.TicketStatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ticket {
+public class TicketEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,13 +28,13 @@ public class Ticket {
 
     @Column(nullable = false, name = "priority")
     @Enumerated(EnumType.STRING)
-    private TicketPriority priority;
+    private TicketPriorityEnum priority;
 
  @Column(
 //         nullable = false,
             name = "status")
     @Enumerated(EnumType.STRING)
-    private TicketStatus status;
+    private TicketStatusEnum status;
 
     @Column(nullable = false, name = "createdBy")
     private Long createdBy;
@@ -58,13 +59,13 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name ="category_id")
-    private TicketCategory ticketCategory;
+    private TicketCategoryEntity ticketCategoryEntity;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+    private List<CommentEntity> commentEntities;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Attachment> attachments;
+    private List<AttachmentEntity> attachmentEntities;
 
 
 

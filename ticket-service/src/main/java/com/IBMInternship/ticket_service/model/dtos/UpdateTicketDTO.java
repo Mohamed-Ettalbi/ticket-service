@@ -1,6 +1,6 @@
-package com.IBMInternship.ticket_service.dao.dto;
+package com.IBMInternship.ticket_service.model.dtos;
 
-import com.IBMInternship.ticket_service.model.TicketPriority;
+import com.IBMInternship.ticket_service.model.enumerations.TicketPriorityEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ public class UpdateTicketDTO {
 
         private String title;
         private String description;
-        private TicketPriority priority;
+        private TicketPriorityEnum priority;
         private Long TicketCategory;
 
 

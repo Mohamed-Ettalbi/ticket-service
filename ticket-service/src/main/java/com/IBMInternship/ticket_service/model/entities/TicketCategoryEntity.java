@@ -1,4 +1,4 @@
-package com.IBMInternship.ticket_service.model;
+package com.IBMInternship.ticket_service.model.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class TicketCategory {
+public class TicketCategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,8 +24,8 @@ public class TicketCategory {
     private String description;
 
 
-    @OneToMany(mappedBy = "ticketCategory")
-    private List<Ticket> tickets;
+    @OneToMany(mappedBy = "ticketCategoryEntity")
+    private List<TicketEntity> ticketEntities;
 
 
 

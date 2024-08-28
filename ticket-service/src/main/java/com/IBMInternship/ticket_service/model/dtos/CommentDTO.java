@@ -1,9 +1,8 @@
-package com.IBMInternship.ticket_service.dao.dto;
+package com.IBMInternship.ticket_service.model.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +17,4 @@ public class CommentDTO {
 
     private Long ticketId;
     private LocalDateTime createdAt;
-
-
 }

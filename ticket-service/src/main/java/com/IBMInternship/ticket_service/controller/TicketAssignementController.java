@@ -1,6 +1,6 @@
 package com.IBMInternship.ticket_service.controller;
 
-import com.IBMInternship.ticket_service.dao.dto.TicketDTO;
+import com.IBMInternship.ticket_service.model.dtos.TicketDTO;
 
 import com.IBMInternship.ticket_service.service.TicketAssignementService;
 
