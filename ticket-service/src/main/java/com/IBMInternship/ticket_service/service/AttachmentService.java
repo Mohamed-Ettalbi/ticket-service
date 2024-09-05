@@ -1,5 +1,9 @@
 package com.IBMInternship.ticket_service.service;
 
+import com.IBMInternship.ticket_service.exceptions.AttachmentNotFoundException;
+import com.IBMInternship.ticket_service.exceptions.FileStorageException;
+import com.IBMInternship.ticket_service.exceptions.InvalidFileNameException;
+import com.IBMInternship.ticket_service.exceptions.TicketNotFoundException;
 import com.IBMInternship.ticket_service.model.dtos.AttachmentDTO;
 import com.IBMInternship.ticket_service.model.entities.AttachmentEntity;
 import com.IBMInternship.ticket_service.model.entities.TicketEntity;
@@ -13,11 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.logging.Logger;
-
 @Service
 public class AttachmentService {
+
     @Autowired
     private AttachmentRepository attachmentRepository;
+
     @Autowired
     private TicketRepository ticketRepository;
 
@@ -28,7 +33,7 @@ public class AttachmentService {
         try {
             // Check if the file's name contains invalid characters
             if (fileName.contains("..")) {
-                throw new RuntimeException("Sorry! Filename contains invalid path sequence ");
+                throw new InvalidFileNameException("Sorry! Filename contains invalid path sequence: " + fileName);
             }
 
             AttachmentEntity attachment = new AttachmentEntity();
@@ -38,20 +43,19 @@ public class AttachmentService {
             attachment.setCreatedAt(LocalDateTime.now());
 
             TicketEntity ticketEntity = ticketRepository.findById(id)
-                    .orElseThrow(()->
-                            new RuntimeException("no ticket by the id : " +id));//to add exceptions later on
+                    .orElseThrow(() -> new TicketNotFoundException("No ticket found with the ID: " + id));
+
             attachment.setTicket(ticketEntity);
 
             return attachmentRepository.save(attachment);
 
         } catch (IOException ex) {
-            throw new RuntimeException("Could not store this file . Please try again!");
+            throw new FileStorageException("Could not store the file " + fileName + ". Please try again!");
         }
     }
 
     public AttachmentEntity getAttachment(Long attachmentId) {
         return attachmentRepository.findById(attachmentId)
-                .orElseThrow(() -> new RuntimeException("File not found " ));
+                .orElseThrow(() -> new AttachmentNotFoundException("File not found with ID: " + attachmentId));
     }
 }
-

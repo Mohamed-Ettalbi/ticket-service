@@ -1,5 +1,7 @@
 package com.IBMInternship.ticket_service.service;
 
+import com.IBMInternship.ticket_service.exceptions.TicketNotFoundException;
+import com.IBMInternship.ticket_service.exceptions.TicketCategoryNotFoundException;
 import com.IBMInternship.ticket_service.repositories.TicketCategoryRepository;
 import com.IBMInternship.ticket_service.repositories.TicketRepository;
 import com.IBMInternship.ticket_service.model.dtos.CreateTicketDTO;
@@ -11,6 +13,7 @@ import com.IBMInternship.ticket_service.model.entities.TicketCategoryEntity;
 import com.IBMInternship.ticket_service.model.enumerations.TicketStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,81 +22,67 @@ import java.util.List;
 public class TicketService {
 
     @Autowired
-    private TicketRepository ticketRepository;
-
+    private  TicketRepository ticketRepository;
     @Autowired
-    private TicketCategoryRepository ticketCategoryRepository;
+    private  TicketCategoryRepository ticketCategoryRepository;
 
 
-    private TicketEntity preapareCreateTicketData(TicketEntity convertedTicketEntity , Long categoryId){
-
+    private TicketEntity prepareCreateTicketData(TicketEntity convertedTicketEntity, Long categoryId, String createdBy) {
         TicketCategoryEntity ticketCategoryEntity = ticketCategoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Ticket category not found"));
+                .orElseThrow(() -> new TicketCategoryNotFoundException("Ticket category not found"));
 
-            convertedTicketEntity.setTicketCategoryEntity(ticketCategoryEntity);
-            convertedTicketEntity.setCreatedAt(LocalDateTime.now());
-            convertedTicketEntity.setUpdatedAt(LocalDateTime.now());
-            convertedTicketEntity.setCreatedBy(1L);// to be removed later
-            convertedTicketEntity.setStatus(TicketStatusEnum.OPEN);
-            return convertedTicketEntity;
+        convertedTicketEntity.setTicketCategoryEntity(ticketCategoryEntity);
+        convertedTicketEntity.setCreatedAt(LocalDateTime.now());
+        convertedTicketEntity.setUpdatedAt(LocalDateTime.now());
+        convertedTicketEntity.setCreatedBy(createdBy); // Email extracted from sub: in token
+        convertedTicketEntity.setStatus(TicketStatusEnum.OPEN);
+        return convertedTicketEntity;
     }
 
 
-
-    public TicketDTO createTicket(CreateTicketDTO ticket) {
+    public TicketDTO createTicket(CreateTicketDTO ticket, String createdBy) {
         TicketEntity convertedTicketEntity = TicketMapper.toEntityForCreate(ticket);
-        TicketEntity  CompleteConvertedTicketEntity =  preapareCreateTicketData(convertedTicketEntity , ticket.getTicketCategory());
-        ticketRepository.save(CompleteConvertedTicketEntity);
-        return TicketMapper.toDTO(CompleteConvertedTicketEntity);
-             }
-
-
+        TicketEntity completeConvertedTicketEntity = prepareCreateTicketData(convertedTicketEntity, ticket.getTicketCategory(), createdBy);
+        ticketRepository.save(completeConvertedTicketEntity);
+        return TicketMapper.toDTO(completeConvertedTicketEntity);
+    }
 
     public TicketDTO getTicketById(Long id) {
-
         TicketEntity ticketEntity = ticketRepository.findById(id)
-                .orElseThrow(()->
-                        new RuntimeException("no ticket by the id : " +id));//to add exceptions later on
+                .orElseThrow(() -> new TicketNotFoundException("No ticket found with ID: " + id));
         return TicketMapper.toDTO(ticketEntity);
     }
 
-
-
     public List<TicketDTO> getAllTickets() {
-
-       List<TicketEntity>  ticketsList = ticketRepository.findAll();
-       return TicketMapper.toDTOs(ticketsList);
+        List<TicketEntity> ticketsList = ticketRepository.findAll();
+        return TicketMapper.toDTOs(ticketsList);
     }
 
 
-
-    public TicketDTO updateTicketPartially(Long id, UpdateTicketDTO update ) {
+    public TicketDTO updateTicketPartially(Long id, UpdateTicketDTO update) {
         TicketEntity ticketEntity = ticketRepository.findById(id)
-                .orElseThrow(()->
-                        new RuntimeException("UPDATE ERROR     :    no ticket by the id  : " +id));
+                .orElseThrow(() -> new TicketNotFoundException("No ticket found with ID: " + id));
 
+        ticketEntity.setUpdatedAt(LocalDateTime.now());
+        ticketEntity.setUpdatedBy(1L); // Replace with actual user ID logic
+        ticketEntity.setTitle(update.getTitle());
+        ticketEntity.setDescription(update.getDescription());
+        ticketEntity.setPriority(update.getPriority());
 
-        //update Logic
-            ticketEntity.setUpdatedAt(LocalDateTime.now());
-            ticketEntity.setUpdatedBy(1L);//for now when i do the logic for createdAt ill use the same method for this
-            ticketEntity.setTitle(update.getTitle());
-            ticketEntity.setDescription(update.getDescription());
-            ticketEntity.setPriority(update.getPriority());
-            TicketCategoryEntity ticketCategoryEntity = ticketCategoryRepository.findById(update.getTicketCategory())
-                    .orElseThrow(() -> new RuntimeException("Ticket category not found"));
-            ticketEntity.setTicketCategoryEntity(ticketCategoryEntity);
-
+        TicketCategoryEntity ticketCategoryEntity = ticketCategoryRepository.findById(update.getTicketCategory())
+                .orElseThrow(() -> new TicketCategoryNotFoundException("Ticket category not found"));
+        ticketEntity.setTicketCategoryEntity(ticketCategoryEntity);
 
         ticketRepository.save(ticketEntity);
         return TicketMapper.toDTO(ticketEntity);
     }
 
+
     public void deleteTicket(Long id) {
         if (ticketRepository.existsById(id)) {
-        ticketRepository.deleteById(id);
-        }else {
-            throw new RuntimeException("no ticket by the id : " +id);
+            ticketRepository.deleteById(id);
+        } else {
+            throw new TicketNotFoundException("No ticket found with ID: " + id);
         }
     }
 }
-

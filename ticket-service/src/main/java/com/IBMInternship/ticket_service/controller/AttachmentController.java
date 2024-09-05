@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/attachment")
@@ -38,8 +36,8 @@ public class AttachmentController {
 
 
 
-    @PostMapping("/uploadFile/{ticketId}")
-    public ResponseEntity<AttachmentDTO> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("ticketId") Long ticketId) {
+    @PostMapping(value = "/uploadFile/{ticketId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public AttachmentDTO uploadFile(@RequestPart("file") MultipartFile file, @PathVariable("ticketId") Long ticketId) {
         AttachmentEntity attachment = attachmentService.storeAttachment(file, ticketId);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -48,13 +46,13 @@ public class AttachmentController {
                 .toUriString();
 
         AttachmentDTO responseAttachment = AttachmentMapper.toDTO(attachment, fileDownloadUri, file.getSize());
-        return new ResponseEntity<>(responseAttachment, HttpStatus.OK);
+        return responseAttachment;
     }
 
 
-    @PostMapping("/uploadMultipleFiles/{ticketId}")
-    public List<ResponseEntity<AttachmentDTO>> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @PathVariable("ticketId") Long ticketId) {
-        List<ResponseEntity<AttachmentDTO>> responses = new ArrayList<>();
+    @PostMapping(value = "/uploadMultipleFiles/{ticketId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public List<AttachmentDTO> uploadMultipleFiles(@RequestPart("files") MultipartFile[] files, @PathVariable("ticketId") Long ticketId) {
+        List<AttachmentDTO> responses = new ArrayList<>();
 
         for (MultipartFile file : files) {
             try {
@@ -62,7 +60,7 @@ public class AttachmentController {
                 logger.info("Uploading file: {}", file.getOriginalFilename());
 
                 // Process the file upload
-                ResponseEntity<AttachmentDTO> response = uploadFile(file, ticketId);
+               AttachmentDTO response = uploadFile(file, ticketId);
                 responses.add(response);
 
                 // Log successful upload
@@ -80,7 +78,7 @@ public class AttachmentController {
 
 
     @GetMapping("/downloadAttachment/{attachmentId}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable Long attachmentId, HttpServletRequest request) {
+    public ResponseEntity<Resource> downloadAttachment(@PathVariable Long attachmentId, HttpServletRequest request) {
         AttachmentEntity attachment = attachmentService.getAttachment(attachmentId);
 
         return ResponseEntity.ok()

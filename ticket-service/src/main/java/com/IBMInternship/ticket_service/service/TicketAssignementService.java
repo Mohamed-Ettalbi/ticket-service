@@ -4,6 +4,7 @@ import com.IBMInternship.ticket_service.repositories.TicketRepository;
 import com.IBMInternship.ticket_service.model.dtos.TicketDTO;
 import com.IBMInternship.ticket_service.mappers.TicketMapper;
 import com.IBMInternship.ticket_service.model.entities.TicketEntity;
+import com.IBMInternship.ticket_service.exceptions.TicketNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class TicketAssignementService {
     @Transactional
     public TicketDTO assignTicketToUser(Long ticketId, Long userId) {
         TicketEntity ticketEntity = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
         ticketEntity.setAssignedTo(userId);
         ticketRepository.save(ticketEntity);
 
@@ -27,7 +28,7 @@ public class TicketAssignementService {
     @Transactional
     public TicketDTO assignTicketToGroup(Long ticketId, Long groupId) {
         TicketEntity ticketEntity = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
 
         ticketEntity.setAssignedGroup(groupId);
         ticketRepository.save(ticketEntity);
@@ -38,7 +39,7 @@ public class TicketAssignementService {
     @Transactional
     public TicketDTO unassignTicket(Long ticketId) {
         TicketEntity ticketEntity = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
 
         ticketEntity.setAssignedTo(null);
         ticketEntity.setAssignedGroup(null);
@@ -46,6 +47,4 @@ public class TicketAssignementService {
 
         return TicketMapper.toDTO(ticketEntity);
     }
-
-
 }

@@ -58,6 +58,7 @@ public class TicketMapper {
            ticketDTO.setUpdatedAt(ticketEntity.getUpdatedAt());
            ticketDTO.setResolvedAt(ticketEntity.getResolvedAt());
            ticketDTO.setTicketCategoryName(ticketEntity.getTicketCategoryEntity().getName());
+           ticketDTO.setCreatedBy(ticketEntity.getCreatedBy());
            return ticketDTO;
        }
 

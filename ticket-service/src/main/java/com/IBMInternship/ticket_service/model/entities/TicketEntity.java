@@ -3,6 +3,7 @@ package com.IBMInternship.ticket_service.model.entities;
 import com.IBMInternship.ticket_service.model.enumerations.TicketPriorityEnum;
 import com.IBMInternship.ticket_service.model.enumerations.TicketStatusEnum;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class TicketEntity {
     @Column(nullable = false, name = "title")
     private String title;
 
-    @Column(nullable = false, name = "description")
+    @Column(nullable = false, length = 3000, name = "description")
     private String description;
 
     @Column(nullable = false, name = "priority")
@@ -37,7 +38,7 @@ public class TicketEntity {
     private TicketStatusEnum status;
 
     @Column(nullable = false, name = "createdBy")
-    private Long createdBy;
+    private String createdBy;
 
     @Column
     private Long updatedBy;

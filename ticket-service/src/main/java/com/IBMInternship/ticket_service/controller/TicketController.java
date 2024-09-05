@@ -17,9 +17,9 @@ import java.util.List;
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping
-    public ResponseEntity<TicketDTO> createTicket(@RequestBody CreateTicketDTO createTicketDTO) {
-        TicketDTO createdTicket = ticketService.createTicket(createTicketDTO);
+    @PostMapping("/{createdBy}")
+    public ResponseEntity<TicketDTO> createTicket( @PathVariable String createdBy ,@RequestBody CreateTicketDTO createTicketDTO ) {
+        TicketDTO createdTicket = ticketService.createTicket(createTicketDTO, createdBy);
         return ResponseEntity.ok(createdTicket);
     }
 

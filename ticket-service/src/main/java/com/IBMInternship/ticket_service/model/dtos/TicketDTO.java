@@ -24,6 +24,6 @@ public class TicketDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime resolvedAt;
+    private String createdBy;
 
-    // Getters and Setters
 }
