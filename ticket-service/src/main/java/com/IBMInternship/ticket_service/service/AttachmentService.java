@@ -9,6 +9,8 @@ import com.IBMInternship.ticket_service.model.entities.AttachmentEntity;
 import com.IBMInternship.ticket_service.model.entities.TicketEntity;
 import com.IBMInternship.ticket_service.repositories.AttachmentRepository;
 import com.IBMInternship.ticket_service.repositories.TicketRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,9 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.logging.Logger;
+import java.util.List;
+
 @Service
 public class AttachmentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
 
     @Autowired
     private AttachmentRepository attachmentRepository;
@@ -28,6 +33,8 @@ public class AttachmentService {
 
     public AttachmentEntity storeAttachment(MultipartFile file, Long id) {
         // Normalize file name
+        logger.debug("method storeAttachment has been caled");
+
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
@@ -58,4 +65,9 @@ public class AttachmentService {
         return attachmentRepository.findById(attachmentId)
                 .orElseThrow(() -> new AttachmentNotFoundException("File not found with ID: " + attachmentId));
     }
+
+    public List<AttachmentEntity> getAttachmentsByTicketId(Long ticketId) {
+        return attachmentRepository.findByTicketId(ticketId);
+    }
+
 }

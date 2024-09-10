@@ -18,6 +18,8 @@ public class CommentMapper {
         commentDTO.setTicketId(commentEntity.getTicket().getId());
         commentDTO.setMessage(commentEntity.getMessage());
         commentDTO.setCreatedAt(commentEntity.getCreatedAt());
+        commentDTO.setParrentCommentId(commentEntity.getCommentParrentId());
+        commentDTO.setAuthorEmail(commentEntity.getAuthorEmail());
 
         return commentDTO;
     }

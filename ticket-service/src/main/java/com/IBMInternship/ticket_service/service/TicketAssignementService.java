@@ -1,5 +1,6 @@
 package com.IBMInternship.ticket_service.service;
 
+import com.IBMInternship.ticket_service.exceptions.TechnicianNotInTicketGroup;
 import com.IBMInternship.ticket_service.repositories.TicketRepository;
 import com.IBMInternship.ticket_service.model.dtos.TicketDTO;
 import com.IBMInternship.ticket_service.mappers.TicketMapper;
@@ -16,13 +17,22 @@ public class TicketAssignementService {
     private TicketRepository ticketRepository;
 
     @Transactional
-    public TicketDTO assignTicketToUser(Long ticketId, Long userId) {
+    public TicketDTO assignTicketToUser(Long ticketId, String userEmail, Long technicianGroupId) {
         TicketEntity ticketEntity = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
-        ticketEntity.setAssignedTo(userId);
+        if (technicianGroupId == ticketEntity.getAssignedGroup()) {
+
+
+
+
+
+
+        ticketEntity.setAssignedTo(userEmail);
         ticketRepository.save(ticketEntity);
 
         return TicketMapper.toDTO(ticketEntity);
+    }
+        else throw new TechnicianNotInTicketGroup("technician not in ticket group");
     }
 
     @Transactional

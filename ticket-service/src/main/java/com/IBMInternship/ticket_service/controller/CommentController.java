@@ -19,8 +19,8 @@ public class CommentController {
 
 
     @PostMapping("/{ticketId}")
-    public ResponseEntity<CommentDTO> addComment(@PathVariable Long ticketId, @RequestBody String message) {
-        CommentDTO savedComment = commentService.addCommentToTicket(ticketId, message);
+    public ResponseEntity<CommentDTO> addComment(@PathVariable Long ticketId, @RequestBody CommentDTO commentDTO) {
+        CommentDTO savedComment = commentService.addCommentToTicket(ticketId, commentDTO);
         return ResponseEntity.ok(savedComment);
     }
 
@@ -31,9 +31,9 @@ public class CommentController {
     }
 
     @DeleteMapping("/delete/{commentId}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
+    public ResponseEntity<String> deleteComment(@PathVariable Long commentId ,@RequestParam(value = "email", required = false) String email) {
 
-        commentService.deleteCommentById(commentId);
+        commentService.deleteCommentById(commentId , email);
         return ResponseEntity.ok("Comment deleted successfully");
     }
     @PutMapping("/update/{commentId}")

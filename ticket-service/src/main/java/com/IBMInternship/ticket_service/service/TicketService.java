@@ -2,6 +2,8 @@ package com.IBMInternship.ticket_service.service;
 
 import com.IBMInternship.ticket_service.exceptions.TicketNotFoundException;
 import com.IBMInternship.ticket_service.exceptions.TicketCategoryNotFoundException;
+import com.IBMInternship.ticket_service.exceptions.TechnicianNotInTicketGroup;
+import com.IBMInternship.ticket_service.model.dtos.StatusUpdateDTO;
 import com.IBMInternship.ticket_service.repositories.TicketCategoryRepository;
 import com.IBMInternship.ticket_service.repositories.TicketRepository;
 import com.IBMInternship.ticket_service.model.dtos.CreateTicketDTO;
@@ -11,6 +13,8 @@ import com.IBMInternship.ticket_service.mappers.TicketMapper;
 import com.IBMInternship.ticket_service.model.entities.TicketEntity;
 import com.IBMInternship.ticket_service.model.entities.TicketCategoryEntity;
 import com.IBMInternship.ticket_service.model.enumerations.TicketStatusEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,9 @@ public class TicketService {
     private  TicketRepository ticketRepository;
     @Autowired
     private  TicketCategoryRepository ticketCategoryRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
+
 
 
     private TicketEntity prepareCreateTicketData(TicketEntity convertedTicketEntity, Long categoryId, String createdBy) {
@@ -75,6 +82,39 @@ public class TicketService {
 
         ticketRepository.save(ticketEntity);
         return TicketMapper.toDTO(ticketEntity);
+    }
+    public TicketDTO updateTicketStatus (Long ticketId, StatusUpdateDTO statusUpdateDTO ){
+
+        TicketEntity ticketEntity = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new TicketNotFoundException("No ticket found with ID: " + ticketId));
+
+        if (statusUpdateDTO.isAdmin()){
+            ticketEntity.setUpdatedAt(LocalDateTime.now());
+            ticketEntity.setStatus(statusUpdateDTO.getStatus());
+
+            if(statusUpdateDTO.getStatus() == TicketStatusEnum.CLOSED){
+                ticketEntity.setResolvedAt(LocalDateTime.now());
+            }
+            ticketRepository.save(ticketEntity);
+
+        }
+
+        Boolean checkingGroup= statusUpdateDTO.getTechnicianGroupId() == ticketEntity.getAssignedGroup();
+
+      if(checkingGroup) {
+          logger.debug("technicianGroupId check Result is : {}" ,checkingGroup);
+
+
+          ticketEntity.setUpdatedAt(LocalDateTime.now());
+        ticketEntity.setStatus(statusUpdateDTO.getStatus());
+
+        if(statusUpdateDTO.getStatus() == TicketStatusEnum.CLOSED){
+            ticketEntity.setResolvedAt(LocalDateTime.now());
+        }
+        ticketRepository.save(ticketEntity);
+
+return TicketMapper.toDTO(ticketEntity);
+        } else throw new TechnicianNotInTicketGroup("this technician is not allowed to set this ticket status");
     }
 
 

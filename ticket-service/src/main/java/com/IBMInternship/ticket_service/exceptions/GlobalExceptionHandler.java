@@ -42,4 +42,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleCommentNotFoundException(CommentNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(TechnicianNotInTicketGroup.class)
+    public ResponseEntity<String> handleTechnicianNotInTicketGroup(TechnicianNotInTicketGroup ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.PRECONDITION_FAILED);
+    }
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<String> handleUnauthorizedAccessException(UnauthorizedAccessException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.PRECONDITION_FAILED);
+    }
 }

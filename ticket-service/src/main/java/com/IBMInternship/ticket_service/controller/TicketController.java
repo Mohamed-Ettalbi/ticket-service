@@ -1,6 +1,7 @@
 package com.IBMInternship.ticket_service.controller;
 
 import com.IBMInternship.ticket_service.model.dtos.CreateTicketDTO;
+import com.IBMInternship.ticket_service.model.dtos.StatusUpdateDTO;
 import com.IBMInternship.ticket_service.model.dtos.TicketDTO;
 import com.IBMInternship.ticket_service.model.dtos.UpdateTicketDTO;
 import com.IBMInternship.ticket_service.service.TicketService;
@@ -49,6 +50,12 @@ import java.util.List;
 
 
         TicketDTO updatedTicket = ticketService.updateTicketPartially(id,updateTicketDTO);
+        return ResponseEntity.ok(updatedTicket);
+    }
+
+    @PutMapping("/updateStatus/{ticketId}")
+    public  ResponseEntity<TicketDTO> updateTicketStatus(@PathVariable Long ticketId, @RequestBody StatusUpdateDTO statusUpdateDTO) {
+        TicketDTO updatedTicket = ticketService.updateTicketStatus(ticketId, statusUpdateDTO);
         return ResponseEntity.ok(updatedTicket);
     }
 }

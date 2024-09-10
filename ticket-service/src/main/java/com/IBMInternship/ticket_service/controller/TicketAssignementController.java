@@ -21,9 +21,9 @@ public class TicketAssignementController {
 
 
 
-    @PutMapping("/{ticketId}/assign/user/{userId}")
-    public ResponseEntity<TicketDTO> assignTicketToUser(@PathVariable Long ticketId, @PathVariable Long userId) {
-        TicketDTO updatedTicket = ticketAssignmentService.assignTicketToUser(ticketId, userId);
+    @PutMapping("/{ticketId}/assign/user/{userEmail}/{technicianGroupId}")
+    public ResponseEntity<TicketDTO> assignTicketToUser(@PathVariable Long ticketId, @PathVariable String userEmail , @PathVariable Long technicianGroupId) {
+        TicketDTO updatedTicket = ticketAssignmentService.assignTicketToUser(ticketId, userEmail, technicianGroupId);
         return ResponseEntity.ok(updatedTicket);
     }
 

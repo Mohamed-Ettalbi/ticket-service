@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/attachment")
@@ -56,14 +57,12 @@ public class AttachmentController {
 
         for (MultipartFile file : files) {
             try {
-                // Log the file upload attempt
                 logger.info("Uploading file: {}", file.getOriginalFilename());
 
-                // Process the file upload
+
                AttachmentDTO response = uploadFile(file, ticketId);
                 responses.add(response);
 
-                // Log successful upload
                 logger.info("Successfully uploaded file: {}", file.getOriginalFilename());
 
             } catch (Exception e) {
@@ -86,4 +85,6 @@ public class AttachmentController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + attachment.getFileName() + "\"")
                 .body(new ByteArrayResource(attachment.getData()));
     }
+
+
 }

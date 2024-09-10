@@ -54,7 +54,7 @@ public class TicketEntity {
 
 
     @Column(name = "assigned_to")
-    private Long assignedTo;          //the technician handling the ticket
+    private String assignedTo;          //the technician handling the ticket
     @Column(name = "assigned_group")
     private Long assignedGroup;     // the group of technicians the ticket is assigned to
 

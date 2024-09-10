@@ -30,7 +30,9 @@ public class CommentEntity {
         @JoinColumn(name = "ticket_id")
         private TicketEntity ticket;
 
-        private Long userId;
+        private String authorEmail;
+
+        private Long CommentParrentId;
 
 
     }
