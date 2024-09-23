@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class StatusUpdateDTO {
 
     private TicketStatusEnum status;
-    private Long technicianId;
+    private String statusUpdatedBy;
     private Long technicianGroupId;
     private boolean isAdmin;
 

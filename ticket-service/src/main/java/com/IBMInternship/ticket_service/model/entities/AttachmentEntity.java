@@ -27,6 +27,8 @@ public class AttachmentEntity {
 
     private LocalDateTime createdAt;
 
+    private long size;
+
 
     @ManyToOne
     @JoinColumn(name = "ticket_id")

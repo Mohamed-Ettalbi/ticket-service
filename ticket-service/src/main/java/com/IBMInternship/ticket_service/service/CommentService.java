@@ -58,14 +58,17 @@ public class CommentService {
 
     public void deleteCommentById(Long commentId , String email) {
 
-        CommentEntity commentEntity = commentRepository.findById(commentId)
+     CommentEntity commentEntity = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found "));
+
         logger.debug("Deleting comment with id  {} and email of user deleting is {} " ,commentId , email);
 String commentAuthor = commentEntity.getAuthorEmail();
-   boolean emailMatchCheck= email.equals(commentAuthor);
-   logger.debug("email check of commentAuthor {} and deleting user Email {} is : {}:" , commentAuthor , email ,emailMatchCheck );
+
+   logger.debug("email check of commentAuthor {} and deleting user Email {} is : " , commentAuthor , email  );
 
         if (email != null && !email.isEmpty()) {
+            boolean emailMatchCheck= email.equals(commentAuthor);
+
             if (!emailMatchCheck) {
                 throw new UnauthorizedAccessException("You are not authorized to delete this comment.");
             }

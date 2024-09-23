@@ -48,6 +48,7 @@ public class AttachmentService {
             attachment.setFileType(file.getContentType());
             attachment.setData(file.getBytes());
             attachment.setCreatedAt(LocalDateTime.now());
+            attachment.setSize(file.getSize());
 
             TicketEntity ticketEntity = ticketRepository.findById(id)
                     .orElseThrow(() -> new TicketNotFoundException("No ticket found with the ID: " + id));
@@ -68,6 +69,10 @@ public class AttachmentService {
 
     public List<AttachmentEntity> getAttachmentsByTicketId(Long ticketId) {
         return attachmentRepository.findByTicketId(ticketId);
+    }
+
+    public void deleteAttachmentById(Long attachmentId){
+          attachmentRepository.deleteById(attachmentId);
     }
 
 }

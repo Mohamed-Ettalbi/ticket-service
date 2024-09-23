@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class CreateTicketDTO {
 
         private String title;
+
         private String description;
         private TicketPriorityEnum priority;
         private Long TicketCategory;

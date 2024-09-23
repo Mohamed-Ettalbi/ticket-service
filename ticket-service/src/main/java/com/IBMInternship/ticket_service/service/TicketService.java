@@ -3,6 +3,7 @@ package com.IBMInternship.ticket_service.service;
 import com.IBMInternship.ticket_service.exceptions.TicketNotFoundException;
 import com.IBMInternship.ticket_service.exceptions.TicketCategoryNotFoundException;
 import com.IBMInternship.ticket_service.exceptions.TechnicianNotInTicketGroup;
+import com.IBMInternship.ticket_service.exceptions.UnauthorizedAccessException;
 import com.IBMInternship.ticket_service.model.dtos.StatusUpdateDTO;
 import com.IBMInternship.ticket_service.repositories.TicketCategoryRepository;
 import com.IBMInternship.ticket_service.repositories.TicketRepository;
@@ -69,7 +70,12 @@ public class TicketService {
     public TicketDTO updateTicketPartially(Long id, UpdateTicketDTO update) {
         TicketEntity ticketEntity = ticketRepository.findById(id)
                 .orElseThrow(() -> new TicketNotFoundException("No ticket found with ID: " + id));
+        boolean ifOwner = update.getTicketOwnerEmail().equals(ticketEntity.getCreatedBy());
 
+        if (!ifOwner) {
+
+            throw new UnauthorizedAccessException("You Don't have the right to edit this ticket");
+        }
         ticketEntity.setUpdatedAt(LocalDateTime.now());
         ticketEntity.setUpdatedBy(1L); // Replace with actual user ID logic
         ticketEntity.setTitle(update.getTitle());
@@ -87,21 +93,22 @@ public class TicketService {
 
         TicketEntity ticketEntity = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new TicketNotFoundException("No ticket found with ID: " + ticketId));
+        logger.debug("Checking the dto received {}" ,statusUpdateDTO);
+        Boolean checkingGroup= statusUpdateDTO.getTechnicianGroupId() == ticketEntity.getAssignedGroup();
+        boolean ifAssignedToHim = statusUpdateDTO.getStatusUpdatedBy().equals( ticketEntity.getAssignedTo());
 
+        logger.debug(" email from backend  {}  , email from ticket   {}   result : {}" ,statusUpdateDTO.getStatusUpdatedBy() , ticketEntity.getAssignedTo(), ifAssignedToHim);
+        logger.debug("Checking if assigned to him? {} if in group {}" , ifAssignedToHim , checkingGroup);
         if (statusUpdateDTO.isAdmin()){
-            ticketEntity.setUpdatedAt(LocalDateTime.now());
+                ticketEntity.setUpdatedAt(LocalDateTime.now());
             ticketEntity.setStatus(statusUpdateDTO.getStatus());
-
             if(statusUpdateDTO.getStatus() == TicketStatusEnum.CLOSED){
                 ticketEntity.setResolvedAt(LocalDateTime.now());
             }
             ticketRepository.save(ticketEntity);
+            return TicketMapper.toDTO(ticketEntity);
+        }else if(checkingGroup && ifAssignedToHim) {
 
-        }
-
-        Boolean checkingGroup= statusUpdateDTO.getTechnicianGroupId() == ticketEntity.getAssignedGroup();
-
-      if(checkingGroup) {
           logger.debug("technicianGroupId check Result is : {}" ,checkingGroup);
 
 

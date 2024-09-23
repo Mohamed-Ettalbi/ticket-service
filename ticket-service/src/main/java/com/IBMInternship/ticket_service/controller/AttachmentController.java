@@ -86,5 +86,25 @@ public class AttachmentController {
                 .body(new ByteArrayResource(attachment.getData()));
     }
 
+    @GetMapping("/attachments/{ticketId}")
+    public ResponseEntity<List<AttachmentDTO>> getAttachmentsByTicketId(@PathVariable Long ticketId) {
+        List<AttachmentEntity> attachments = attachmentService.getAttachmentsByTicketId(ticketId);
+        List<AttachmentDTO> attachmentDTOs = attachments.stream()
+                .map(attachment -> {
+                    String downloadUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                            .path("/api/attachment/downloadAttachment/")
+                            .path(String.valueOf(attachment.getAttachmentId()))
+                            .toUriString();
+                    return new AttachmentDTO(attachment.getFileName(), downloadUrl, attachment.getFileType(), attachment.getSize());
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(attachmentDTOs);
+    }
 
+
+    @DeleteMapping("/attachments/delete/{attachmentId}")
+    public ResponseEntity<Void> deleteAttachmentById(@PathVariable Long attachmentId) {
+        attachmentService.deleteAttachmentById(attachmentId);
+        return ResponseEntity.noContent().build(); // Return 204 No Content
+    }
 }
